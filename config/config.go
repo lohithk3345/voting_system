@@ -22,6 +22,7 @@ func getENV() map[string]string {
 	envMap["MONGODB_URL"] = os.Getenv("MONGODB_URL")
 	envMap["REST_API_PORT"] = os.Getenv("REST_API_PORT")
 	envMap["GRPC_PORT"] = os.Getenv("GRPC_PORT")
+	envMap["VOTING_WEBSOCKET_PORT"] = os.Getenv("VOTING_WEBSOCKET_PORT")
 	for key, value := range envMap {
 		if helpers.IsEmpty(value) {
 			log.Fatalf("ENV not found for %s", key)

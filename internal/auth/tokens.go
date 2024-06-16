@@ -20,7 +20,7 @@ func GenerateAccessToken(id string, role types.Role) (types.Token, error) {
 		Id:   id,
 		Role: role,
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: time.Now().Add(5 * time.Minute).Unix(),
+			ExpiresAt: time.Now().Add(24 * time.Hour).Unix(),
 		},
 	}
 

@@ -61,7 +61,7 @@ func (s *UserServer) GetUserById(ctx context.Context, req *buffers.GetUserByIdRe
 		UserId: user.Id,
 		Name:   user.Name,
 		Email:  user.Email,
-		Age:    int32(user.Age),
+		Age:    uint32(user.Age),
 	}, nil
 }
 

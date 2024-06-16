@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"log"
+	"strings"
 	"sync"
 
 	"github.com/lohithk3345/voting_system/config"
@@ -25,6 +26,33 @@ func NewCacheService() *CacheService {
 		}),
 		mu: sync.Mutex{},
 	}
+}
+
+func (cache *CacheService) InitWSManager() ([]*types.InitVoteData, error) {
+	roomKeys, err := cache.client.Keys(context.Background(), "voting:*").Result()
+	if err != nil {
+		return nil, err
+	}
+
+	// var voteData []*types.VoteData
+	// var keys []string
+
+	var initData []*types.InitVoteData
+
+	for _, roomKey := range roomKeys {
+		roomID := strings.TrimPrefix(roomKey, "voting:")
+		data, err := cache.GetVoteDataByRoomId(roomID)
+		if err != nil {
+			return nil, err
+		}
+
+		initData = append(initData, &types.InitVoteData{
+			Data: data,
+			Keys: roomID,
+		})
+	}
+
+	return initData, nil
 }
 
 func (cache *CacheService) Set(key string, value interface{}) error {
@@ -121,4 +149,90 @@ func (cache *CacheService) DeleteTokenKey(key string) error {
 	cache.mu.Unlock()
 
 	return nil
+}
+
+func (cache *CacheService) CreateRoom(roomId string, data *types.VoteData) error {
+	ctx := context.Background()
+
+	cache.mu.Lock()
+	input_key := "voting:" + roomId
+
+	marshalData, errMarshal := json.Marshal(data)
+	if errMarshal != nil {
+		log.Println("Error Setting Tokens", errMarshal)
+		return CacheError{Code: SET_MARSHAL_ERROR, Message: errMarshal.Error()}
+	}
+
+	err := cache.client.Set(ctx, input_key, marshalData, 0).Err()
+
+	if err != nil {
+		log.Println("Error Setting Tokens", err)
+		return CacheError{Code: SET_ERROR, Message: err.Error()}
+	}
+
+	cache.mu.Unlock()
+
+	return nil
+}
+
+func (cache *CacheService) SetVoteByRoomId(roomId string, option string) (*types.VoteData, error) {
+	ctx := context.Background()
+
+	cache.mu.Lock()
+
+	input_key := "voting:" + roomId
+
+	value, err := cache.client.Get(ctx, input_key).Result()
+	if err != nil {
+		log.Println("Error Getting Value", err)
+		return nil, CacheError{Code: GET_ERROR, Message: err.Error()}
+	}
+
+	// cache.mu.Unlock()
+
+	var voteData types.VoteData
+
+	json.Unmarshal([]byte(value), &voteData)
+
+	voteData.Options[option]++
+
+	marshalData, errMarshal := json.Marshal(voteData)
+	if errMarshal != nil {
+		log.Println("Error Setting Tokens", errMarshal)
+		return nil, CacheError{Code: SET_MARSHAL_ERROR, Message: errMarshal.Error()}
+	}
+
+	// cache.mu.Lock()
+
+	errSet := cache.client.Set(ctx, input_key, marshalData, 0).Err()
+	if errSet != nil {
+		log.Println("Error Setting Tokens", err)
+		return nil, CacheError{Code: SET_ERROR, Message: errSet.Error()}
+	}
+
+	cache.mu.Unlock()
+
+	return &voteData, nil
+}
+
+func (cache *CacheService) GetVoteDataByRoomId(roomId string) (*types.VoteData, error) {
+	ctx := context.Background()
+
+	cache.mu.Lock()
+
+	input_key := "voting:" + roomId
+
+	value, err := cache.client.Get(ctx, input_key).Result()
+	if err != nil {
+		log.Println("Error Getting Value", err)
+		return nil, CacheError{Code: GET_ERROR, Message: err.Error()}
+	}
+
+	cache.mu.Unlock()
+
+	var voteData types.VoteData
+
+	json.Unmarshal([]byte(value), &voteData)
+
+	return &voteData, nil
 }

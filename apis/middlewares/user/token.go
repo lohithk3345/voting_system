@@ -68,6 +68,8 @@ func (m *UserMiddlewares) CheckAccessTokenAuth() gin.HandlerFunc {
 			return
 		}
 
+		log.Println("TOKEN", claims.Id)
+
 		ctx.Set("userId", claims.Id)
 		ctx.Set("role", claims.Role)
 
