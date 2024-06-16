@@ -1,4 +1,4 @@
-package userHandlers
+package handlers
 
 import (
 	"log"
@@ -47,6 +47,11 @@ func NewUserApiHandler(database *mongo.Database, cache *cache.CacheService) *Use
 func (u UserAPIHandlers) registerVoter(ctx *gin.Context) {
 	var user *types.VoterRequest
 	ctx.BindJSON(&user)
+
+	if !(helpers.Validators.Email(user.Email)) {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": "Please enter proper email"})
+		return
+	}
 
 	newUser := user.Convert()
 

@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"sync"
 
-	userHandlers "github.com/lohithk3345/voting_system/apis/handlers"
+	handlers "github.com/lohithk3345/voting_system/apis/handlers/user"
 	buffers "github.com/lohithk3345/voting_system/buffers/protobuffs"
 	"github.com/lohithk3345/voting_system/cache"
 	"github.com/lohithk3345/voting_system/config"
@@ -32,7 +32,7 @@ func setupGRPC(db *mongo.Database, wg *sync.WaitGroup) {
 }
 
 func setupREST(db *mongo.Database, wg *sync.WaitGroup) {
-	u := userHandlers.NewUserApiHandler(db, cache.NewCacheService())
+	u := handlers.NewUserApiHandler(db, cache.NewCacheService())
 	router := u.SetupUserRouter()
 
 	log.Printf("Starting HTTP server at: %s\n", config.EnvMap["REST_API_PORT"])

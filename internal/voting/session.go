@@ -36,8 +36,6 @@ func CreateRandomRoom(store *cache.CacheService) (*VotingRoom, string) {
 func InitRoom(id string, voteData *types.VoteData) *VotingRoom {
 	// id := RandomIDGenerator()
 
-	log.Println("NAME", voteData.Name)
-
 	return &VotingRoom{
 		id:      id,
 		clients: make(map[types.VoterID]*Client),
@@ -49,8 +47,6 @@ func InitRoom(id string, voteData *types.VoteData) *VotingRoom {
 
 func CreateNewRoom(voteData *types.VoteData, manager *UserWebsocketsManager) *RoomCreated {
 	id := RandomIDGenerator()
-
-	log.Println("NAME", voteData.Name)
 
 	room := &VotingRoom{
 		id:      id,

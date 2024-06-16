@@ -6,6 +6,7 @@ import (
 
 	buffers "github.com/lohithk3345/voting_system/buffers/protobuffs"
 	"github.com/lohithk3345/voting_system/cache"
+	"github.com/lohithk3345/voting_system/helpers"
 	"github.com/lohithk3345/voting_system/internal/auth"
 	userServices "github.com/lohithk3345/voting_system/services/user"
 	"github.com/lohithk3345/voting_system/types"
@@ -27,6 +28,9 @@ func NewUserServer(db *mongo.Database) *UserServer {
 
 func (s *UserServer) CreateUser(ctx context.Context, req *buffers.CreateUserRequest) (*buffers.CreateUserResponse, error) {
 	newUser := types.ConvertUserRPCRequest(req)
+	if !(helpers.Validators.Email(req.Email)) {
+		return nil, status.Error(codes.InvalidArgument, "Please enter proper email")
+	}
 	hash, errPass := auth.HashPassword([]byte(req.Password))
 	if errPass != nil {
 		return nil, status.Error(codes.Internal, "Internal Server Error")
