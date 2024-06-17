@@ -6,6 +6,7 @@ import (
 	"log"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/lohithk3345/voting_system/config"
 	"github.com/lohithk3345/voting_system/types"
@@ -29,7 +30,10 @@ func NewCacheService() *CacheService {
 }
 
 func (cache *CacheService) InitWSManager() ([]*types.InitVoteData, error) {
-	roomKeys, err := cache.client.Keys(context.Background(), "voting:*").Result()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	roomKeys, err := cache.client.Keys(ctx, "voting:*").Result()
 	if err != nil {
 		return nil, err
 	}
@@ -56,7 +60,8 @@ func (cache *CacheService) InitWSManager() ([]*types.InitVoteData, error) {
 }
 
 func (cache *CacheService) Set(key string, value interface{}) error {
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	cache.mu.Lock()
 
@@ -72,7 +77,8 @@ func (cache *CacheService) Set(key string, value interface{}) error {
 }
 
 func (cache *CacheService) SetTokens(key string, value types.Tokens) error {
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	input_key := "user:" + key + "tokens"
 
@@ -96,7 +102,8 @@ func (cache *CacheService) SetTokens(key string, value types.Tokens) error {
 }
 
 func (cache *CacheService) GetTokens(key string) (*types.Tokens, error) {
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	cache.mu.Lock()
 
@@ -118,7 +125,8 @@ func (cache *CacheService) GetTokens(key string) (*types.Tokens, error) {
 }
 
 func (cache *CacheService) Get(key string) (interface{}, error) {
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	cache.mu.Lock()
 
@@ -134,7 +142,8 @@ func (cache *CacheService) Get(key string) (interface{}, error) {
 }
 
 func (cache *CacheService) DeleteTokenKey(key string) error {
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	input_key := "user:" + key + "tokens"
 
@@ -152,7 +161,8 @@ func (cache *CacheService) DeleteTokenKey(key string) error {
 }
 
 func (cache *CacheService) CreateRoom(roomId string, data *types.VoteData) error {
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	cache.mu.Lock()
 	input_key := "voting:" + roomId
@@ -176,7 +186,8 @@ func (cache *CacheService) CreateRoom(roomId string, data *types.VoteData) error
 }
 
 func (cache *CacheService) SetVoteByRoomId(roomId string, option string) (*types.VoteData, error) {
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	cache.mu.Lock()
 
@@ -216,7 +227,8 @@ func (cache *CacheService) SetVoteByRoomId(roomId string, option string) (*types
 }
 
 func (cache *CacheService) GetVoteDataByRoomId(roomId string) (*types.VoteData, error) {
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
 
 	cache.mu.Lock()
 
