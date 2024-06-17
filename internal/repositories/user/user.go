@@ -2,7 +2,7 @@ package userRepository
 
 import (
 	"github.com/lohithk3345/voting_system/helpers"
-	reporesult "github.com/lohithk3345/voting_system/rpc/repo_result"
+	reporesult "github.com/lohithk3345/voting_system/internal/repositories/repo_result"
 
 	"log"
 
