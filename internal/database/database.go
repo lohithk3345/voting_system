@@ -1,15 +1,23 @@
 package database
 
-import "go.mongodb.org/mongo-driver/mongo"
+import (
+	"context"
+
+	"go.mongodb.org/mongo-driver/mongo"
+)
 
 type ClientManager struct {
 	client *mongo.Client
 }
 
-func NewClient() *ClientManager {
+func NewClient(ctx context.Context) *ClientManager {
 	return &ClientManager{
-		client: connect(),
+		client: connect(ctx),
 	}
+}
+
+func (c *ClientManager) Disconnect(ctx context.Context) {
+	disconnect(c.client, ctx)
 }
 
 func (store *ClientManager) Database(name string) *mongo.Database {

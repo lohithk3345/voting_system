@@ -15,9 +15,15 @@ func configOptions() *options.ClientOptions {
 	return ioptions
 }
 
-func connect() *mongo.Client {
+func disconnect(client *mongo.Client, ctx context.Context) {
+	if err := client.Disconnect(ctx); err != nil {
+		panic(err)
+	}
+}
+
+func connect(ctx context.Context) *mongo.Client {
 	ioptions := configOptions()
-	client, err := mongo.Connect(context.Background(), ioptions)
+	client, err := mongo.Connect(ctx, ioptions)
 	if err != nil {
 		log.Fatalln(err)
 	}
