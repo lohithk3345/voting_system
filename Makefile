@@ -6,9 +6,9 @@ proto:
     protobuffs/user.proto
 
 user:
-	# @go build -o bin/user ./cmd/user
-	@go build -o user ./cmd/user
+	@go build -o bin/user ./cmd/user
+	# @go build -o user ./cmd/user
 
 voting:
-	# @go build -o bin/user ./cmd/voting
-	@go build -o voting ./cmd/voting
+	@go build -o bin/voting ./cmd/voting
+	# @go build -o voting ./cmd/voting

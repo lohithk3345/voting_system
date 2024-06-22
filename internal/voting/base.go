@@ -214,7 +214,7 @@ func (m *UserWebsocketsManager) Run() {
 
 		case vote := <-m.vote:
 			m.mu.Lock()
-			data, err := m.store.SetVoteByRoomId(vote.RoomId, vote.Option)
+			data, err := m.store.SetVoteByRoomId(vote.RoomId, vote.Option, vote.Message)
 			m.mu.Unlock()
 			if err != nil {
 				log.Println("Error SetVote", err)

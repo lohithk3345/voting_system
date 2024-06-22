@@ -10,7 +10,7 @@ import (
 	"log"
 	"time"
 
-	reporesult "github.com/lohithk3345/voting_system/rpc/repo_result"
+	reporesult "github.com/lohithk3345/voting_system/internal/repositories/repo_result"
 )
 
 const (

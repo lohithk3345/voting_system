@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net"
 	"net/http"
@@ -42,7 +43,11 @@ func setupREST(db *mongo.Database, wg *sync.WaitGroup) {
 }
 
 func main() {
-	db := database.NewClient().TestDatabase()
+	ctx := context.Background()
+
+	client := database.NewClient(ctx)
+	db := client.TestDatabase()
+	defer client.Disconnect(ctx)
 
 	var wg sync.WaitGroup
 
