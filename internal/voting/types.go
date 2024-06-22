@@ -65,6 +65,7 @@ func NewBroadcastData(roomId string, data []byte) *BroadcastData {
 }
 
 type Vote struct {
-	RoomId string `json:"room_id"`
-	Option string `json:"option"`
+	RoomId  string `json:"room_id"`
+	Option  string `json:"option"`
+	Message string `json:"message"`
 }

@@ -185,7 +185,7 @@ func (cache *CacheService) CreateRoom(roomId string, data *types.VoteData) error
 	return nil
 }
 
-func (cache *CacheService) SetVoteByRoomId(roomId string, option string) (*types.VoteData, error) {
+func (cache *CacheService) SetVoteByRoomId(roomId string, option string, message string) (*types.VoteData, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -206,6 +206,7 @@ func (cache *CacheService) SetVoteByRoomId(roomId string, option string) (*types
 	json.Unmarshal([]byte(value), &voteData)
 
 	voteData.Options[option]++
+	voteData.Message = message
 
 	marshalData, errMarshal := json.Marshal(voteData)
 	if errMarshal != nil {

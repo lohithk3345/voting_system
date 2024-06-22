@@ -6,6 +6,7 @@ type VoteData struct {
 	Name     string            `json:"name"`
 	Question string            `json:"question"`
 	Options  map[string]uint64 `json:"options"`
+	Message  string            `json:"message"`
 }
 
 type InitVoteData struct {
